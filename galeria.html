@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Galeria - Tayko Corp</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .gallery-section {
+            padding-top: 120px;
+            padding-bottom: 80px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(254, 241, 123, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            border-color: rgba(254, 241, 123, 0.6);
+            box-shadow: 0 15px 40px rgba(254, 241, 123, 0.3);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+        
+        .gallery-caption {
+            color: var(--primary-color);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        .gallery-filter {
+            margin-bottom: 40px;
+        }
+        
+        .filter-btn {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(254, 241, 123, 0.3);
+            color: var(--text-light);
+            padding: 10px 25px;
+            margin: 5px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: var(--darker-bg);
+            border-color: var(--primary-color);
+        }
+        
+        .modal-content {
+            background: var(--dark-bg);
+            border: 2px solid rgba(254, 241, 123, 0.3);
+            border-radius: 15px;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid rgba(254, 241, 123, 0.2);
+        }
+        
+        .modal-title {
+            color: var(--primary-color);
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .btn-close {
+            filter: invert(1);
+        }
+        
+        .modal-body img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        
+        .gallery-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        
+        .gallery-empty i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="logo.png" alt="Tayko Corp Logo" class="navbar-logo">
+                TAYKO CORP
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#home">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#about">Sobre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="historia.html">História</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#services">Serviços</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="galeria.html">Galeria</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#join">Junte-se</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section bg-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center mb-5">
+                    <h2 class="section-title text-light">Galeria</h2>
+                    <div class="title-underline"></div>
+                    <p class="lead text-light mt-4">Momentos épicos e conquistas da Tayko Corp</p>
+                </div>
+            </div>
+            
+            <!-- Filter Buttons -->
+            <div class="gallery-filter text-center">
+                <button class="filter-btn active" data-filter="all">
+                    <i class="bi bi-grid-3x3-gap"></i> Todas
+                </button>
+                <button class="filter-btn" data-filter="naves">
+                    <i class="bi bi-airplane"></i> Naves
+                </button>
+                <button class="filter-btn" data-filter="operacoes">
+                    <i class="bi bi-briefcase"></i> Operações
+                </button>
+                <button class="filter-btn" data-filter="eventos">
+                    <i class="bi bi-calendar-event"></i> Eventos
+                </button>
+                <button class="filter-btn" data-filter="membros">
+                    <i class="bi bi-people"></i> Membros
+                </button>
+            </div>
+            
+            <!-- Gallery Grid -->
+            <!-- NOTA: Substitua as URLs das imagens por screenshots reais do Star Citizen -->
+            <!-- Você pode usar screenshots de naves como: C2 Hercules, Vulture, Prospector, Carrack, Vanguard, Starfarer, Idris, etc. -->
+            <div class="row" id="galleryGrid">
+                <!-- Gallery Item 1 - Nave Cargo -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="naves">
+                    <img src="storage/default.jpg" alt="Nave Cargo Star Citizen" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-airplane"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 2 - Operação Salvage -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="operacoes">
+                    <img src="storage/default.jpg" alt="Operação de Salvage" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-tools"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 3 - Evento -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="eventos">
+                    <img src="storage/default.jpg" alt="Evento da Organização" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-calendar-event"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 4 - Membros -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="membros">
+                    <img src="storage/default.jpg" alt="Equipe Tayko" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-people"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 5 - Nave Mineradora -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="naves">
+                    <img src="storage/default.jpg" alt="Nave Mineradora" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-box-seam"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 6 - Operação Mineração -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="operacoes">
+                    <img src="storage/default.jpg" alt="Mineração" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-minecart"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 7 - Evento -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="eventos">
+                    <img src="storage/default.jpg" alt="Reunião" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-chat-dots"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 8 - Nave de Combate -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="naves">
+                    <img src="storage/default.jpg" alt="Nave de Combate" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-shield"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 9 - Operação Transporte -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="operacoes">
+                    <img src="storage/default.jpg" alt="Transporte" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-truck"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 10 - Nave Exploradora -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="naves">
+                    <img src="storage/default.jpg" alt="Nave Exploradora" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-compass"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 11 - Operação Refinaria -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="operacoes">
+                    <img src="storage/default.jpg" alt="Refinaria" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-gear"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 12 - Evento -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="eventos">
+                    <img src="storage/default.jpg" alt="Cerimônia" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-trophy"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 13 - Membros -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="membros">
+                    <img src="storage/default.jpg" alt="Equipe de Operação" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-people-fill"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 14 - Frota -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="naves">
+                    <img src="storage/default.jpg" alt="Frota em Formação" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-stars"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 15 - Base -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="operacoes">
+                    <img src="storage/default.jpg" alt="Base de Operações" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-building"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 16 - Nave Capital -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="naves">
+                    <img src="storage/default.jpg" alt="Nave Capital" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-stars"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 17 - Operação Trade -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="operacoes">
+                    <img src="storage/default.jpg" alt="Operação de Trade" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-cash-coin"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 18 - Nave Refinadora -->
+                <div class="col-lg-4 col-md-6 gallery-item" data-category="naves">
+                    <img src="storage/default.jpg" alt="Nave Refinadora" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            <i class="bi bi-gear-wide"></i> Em Breve
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Imagem</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="Imagem ampliada" class="img-fluid">
+                    <p id="modalCaption" class="text-light mt-3"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>
+                        <img src="logo.png" alt="Tayko Corp Logo" class="footer-logo">
+                        TAYKO CORP
+                    </h5>
+                    <p>
+                        Dominando o comércio e salvage no universo de Star Citizen. 
+                        Junte-se a nós e faça parte da maior rede comercial do espaço.
+                    </p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>Links Rápidos</h5>
+                    <ul class="footer-links">
+                        <li><a href="index.html#home">Início</a></li>
+                        <li><a href="index.html#about">Sobre</a></li>
+                        <li><a href="historia.html">História</a></li>
+                        <li><a href="index.html#services">Serviços</a></li>
+                        <li><a href="galeria.html">Galeria</a></li>
+                        <li><a href="index.html#join">Junte-se</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contato</h5>
+                    <ul class="footer-links">
+                        <li><i class="bi bi-discord"></i> Discord: Tayko Corp</li>
+                        <li><i class="bi bi-globe"></i> Star Citizen: Tayko Corp</li>
+                        <li><i class="bi bi-envelope"></i> contato@taykocorp.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-3 mb-2">
+            <div class="row mb-0">
+                <div class="col-12 text-center">
+                    <p class="mb-0 pb-0">&copy; 2025 Tayko Corp. Todos os direitos reservados. Star Citizen é uma marca registrada da Cloud Imperium Games.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        // Gallery Filter
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+            
+            // Filter functionality
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Update active button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter items
+                    galleryItems.forEach(item => {
+                        if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                            item.style.display = 'block';
+                            setTimeout(() => {
+                                item.style.opacity = '1';
+                                item.style.transform = 'scale(1)';
+                            }, 10);
+                        } else {
+                            item.style.opacity = '0';
+                            item.style.transform = 'scale(0.8)';
+                            setTimeout(() => {
+                                item.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                });
+            });
+            
+            // Modal functionality
+            galleryItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const img = this.querySelector('img');
+                    const caption = this.querySelector('.gallery-caption');
+                    
+                    document.getElementById('modalImage').src = img.src;
+                    document.getElementById('modalImage').alt = img.alt;
+                    document.getElementById('modalCaption').textContent = caption ? caption.textContent : '';
+                    document.getElementById('imageModalLabel').textContent = caption ? caption.textContent : 'Imagem';
+                    
+                    imageModal.show();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
